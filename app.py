@@ -105,7 +105,7 @@ def main():
         c1, c2, c3, c4, c5, c6, c7 = st.beta_columns(7)  # just to make the button stick to right
 
         data = dict(zip(dates, tasks))
-        st.write(data)
+        # st.write(data)
 
         dataset = pd.DataFrame(data.items(), columns=['Start Date', 'Tasks'])
         st.dataframe(dataset)
