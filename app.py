@@ -29,27 +29,18 @@ def main():
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor() 
         
-        try:
-            id_max = cursor.execute("SELECT MAX(ID) FROM USERS")
-            id_max = cursor.fetchall()[0][0]
-        except:
-            id_max = 1
+        cursor.execute("SELECT * FROM USERS")
+        users_fetched = cursor.fetchall()
+        
 
-        st.write(id_max)
+        for email_i,date_i,day_i in users_fetched:
 
-        for id_temp in range(id_max):
-            id_temp += 1
-            last_temp = cursor.execute(
-                "SELECT UPDATE_DATE,EMAIL FROM USERS WHERE ID = ?", [id_temp])
-            fetched = cursor.fetchall()
-            last_temp = fetched[0][0]
-            email_temp = fetched[0][1]
-            last_update_date = pd.to_datetime(last_temp)
+            last_update_date = pd.to_datetime(date_i)
             day_gap_user = (curr_date - last_update_date).days
-            st.write(last_temp, email_temp, day_gap_user)
-            if day_gap_user >= 2:
-                send_mail(email_temp)
-                st.write("mail sent to ", email_temp)
+            st.write(last_update_date, email_i, day_gap_user)
+            if day_gap_user >= day_i:
+                send_mail(email_i)
+                st.write("mail sent to ", email_i)
 
         conn.close()
 
