@@ -111,11 +111,11 @@ def main():
         st.dataframe(dataset)
 
         if c7.button("Submit"):
-            # csv_exporter(dataset, name_user)
+            csv_exporter(dataset, name_user)
 
             create_user(email, dates[-1])   #dates[-1] contains the last element of the list of the dates. i.e, the last date or the end date.
 
-            # check_and_send()
+            check_and_send()
 
     generate_weekly_trackers_multiuser()
 
