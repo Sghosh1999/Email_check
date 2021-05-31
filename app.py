@@ -57,15 +57,9 @@ def main():
 
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
-        id_max = cursor.execute("SELECT MAX(ID) FROM USERS")
-        id_max = cursor.fetchall()[0][0]
-        if not id_max:
-            id_max = 0
 
-        st.write("is max is :",id_max)
-
-        tuple1 = [id_max+1, email, last_date, days]
-        insert_query = """REPLACE INTO USERS (ID,EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ? , ?)"""
+        tuple1 = [email, last_date, days]
+        insert_query = """REPLACE INTO USERS (EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ?)"""
         cursor.execute(insert_query, tuple1)
         conn.commit()
 
