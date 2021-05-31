@@ -6,10 +6,10 @@ conn = sqlite3.connect('users.db')
 conn.execute('''DROP TABLE USERS;''')
 
 conn.execute('''CREATE TABLE USERS
- (ID INT      NOT NULL,
- EMAIL   TEXT      NOT NULL,
+ ( EMAIL   TEXT  PRIMARY KEY    NOT NULL,
  UPDATE_DATE            TEXT     NOT NULL,
  DAY_GAP INT,
- PRIMARY KEY (ID, EMAIL)
+ 
  );''')
+
 conn.close()
