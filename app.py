@@ -16,19 +16,10 @@ def main():
 
     obj1 = TrackerGenerator()
 
-    def update_user(email, last_date, days=1):
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
-
-        cursor.execute("UPDATE USERS SET UPDATE_DATE = ? WHERE EMAIL = ?", [
-                       last_date, email])
-
     def send_mail(email, massage="you have not submitted in last 2 days"):
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         server.login("codegeeks.kalna@gmail.com", "Code@Geeks21")
-
         server.sendmail("codegeeks.kalna@gmail.com", email, massage)
-
         server.quit()
 
     def create_user(email, last_date, days=1):
@@ -48,7 +39,7 @@ def main():
 
         tuple1 = [id_max+1, email, last_date, days]
 
-        insert_query = """INSERT INTO USERS (ID,EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ? , ?)"""
+        insert_query = """REPLACE INTO USERS (ID,EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ? , ?)"""
 
         cursor.execute(insert_query, tuple1)
 
@@ -71,6 +62,7 @@ def main():
         weekly_trackers = list()
         monthly_trackers = list()
         name_user = st.text_input("Your Name")
+        email = st.text_input("Enter Email")
 
         if not name_user:
             st.warning("please enter your name")
@@ -119,24 +111,19 @@ def main():
 
         if c7.button("Submit"):
             csv_exporter(dataset, name_user)
-            try:
-                st.write("update start")
-
-                update_user("gsayantan1999@gmail.com", str(end_date))
-                st.write("updated")
-            except:
-                st.write("new start ")
-
-                create_user("gsayantan1999@gmail.com", str(end_date))
-                st.write("created")
-
+            #st.write(email, dates[len(dates)-1:][0])
+            create_user(email, dates[len(dates)-1:][0])
             curr_date = datetime.date.today()
             curr_date = pd.to_datetime(curr_date)
             conn = sqlite3.connect('users.db')
             cursor = conn.cursor()
-            id_max = cursor.execute("SELECT MAX(ID) FROM USERS")
+            try:
+                id_max = cursor.execute("SELECT MAX(ID) FROM USERS")
+                id_max = cursor.fetchall()[0][0]
+            except:
+                id_max = 1
 
-            id_max = cursor.fetchall()[0][0]
+            st.write(id_max)
 
             for id_temp in range(id_max):
                 id_temp += 1
@@ -153,10 +140,6 @@ def main():
                     st.write("mail sent to ", email_temp)
 
             conn.close()
-            # if user_exist:
-            #     create_user()
-            # else:
-            #     update_user()
 
     generate_weekly_trackers_multiuser()
 
