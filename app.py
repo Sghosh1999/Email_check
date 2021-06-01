@@ -122,7 +122,20 @@ def main():
 
             create_user(email, dates[-1])   #dates[-1] contains the last element of the list of the dates. i.e, the last date or the end date.
 
-            check_and_send()
+            curr_date = pd.to_datetime(datetime.date.today())
+            
+            conn = sqlite3.connect(database_path)
+            cursor = conn.cursor() 
+            
+            cursor.execute("SELECT UPDATE_DATE FROM USERS WHERE EMAIL = 'checker@checcker'")
+            fetched = cursor.fetchall()
+            # st.write(fetched)
+            updated_date = pd.to_datetime(fetched[0][0])
+
+            if curr_date == updated_date:
+                st.write("updated today already")
+            else:
+                check_and_send()
 
     generate_weekly_trackers_multiuser()
 
