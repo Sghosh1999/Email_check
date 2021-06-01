@@ -33,7 +33,7 @@ def main():
         users_fetched = cursor.fetchall()
         
 
-        for email_i,date_i,day_i in users_fetched:
+        for email_i,date_i,day_i in users_fetched[1:]:
 
             last_update_date = pd.to_datetime(date_i)
             day_gap_user = (curr_date - last_update_date).days
@@ -41,6 +41,13 @@ def main():
             if day_gap_user >= day_i:
                 send_mail(email_i)
                 st.write("mail sent to ", email_i)
+            
+        cursor2 = conn.cursor()
+
+        tuple1 = ['checker@checcker', datetime.date.today(), 1]
+        insert_query = """REPLACE INTO USERS (EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ?)"""
+        cursor2.execute(insert_query, tuple1)
+        conn.commit()
 
         conn.close()
 
