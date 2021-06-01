@@ -33,12 +33,12 @@ def main():
         users_fetched = cursor.fetchall()
         
 
-        for email_i,date_i,day_i in users_fetched[1:]:
+        for email_i,date_i,day_i in users_fetched:
 
             last_update_date = pd.to_datetime(date_i)
             day_gap_user = (curr_date - last_update_date).days
             st.write(last_update_date, email_i, day_gap_user)
-            if day_gap_user >= day_i:
+            if day_gap_user > day_i:
                 send_mail(email_i)
                 st.write("mail sent to ", email_i)
             

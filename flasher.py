@@ -1,5 +1,7 @@
 # this is a file to cleare the db, delete a table and then re create the table
 
+# from datetime import datetime, timedelta
+import datetime
 import sqlite3
 conn = sqlite3.connect('users.db')
 try:
@@ -16,7 +18,7 @@ conn.execute('''CREATE TABLE USERS
 
 cursor = conn.cursor()
 
-tuple1 = ['checker@checcker', '2021-01-01', 1]
+tuple1 = ['checker@checcker', datetime.date.today()-datetime.timedelta(1), 1]
 insert_query = """REPLACE INTO USERS (EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ?)"""
 cursor.execute(insert_query, tuple1)
 conn.commit()
