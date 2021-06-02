@@ -18,6 +18,7 @@ conn.execute('''CREATE TABLE USERS
 conn.close()
 #---------------------------------------------------------------------
 conn = sqlite3.connect('users.db')
+
 try:
     conn.execute('''CREATE TABLE TASKS
     ( EMAIL   TEXT     NOT NULL,
