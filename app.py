@@ -33,7 +33,7 @@ def main():
         users_fetched = cursor.fetchall()
         
 
-        for email_i,date_i,day_i in users_fetched:
+        for email_i,name_i,date_i,day_i in users_fetched:
 
             last_update_date = pd.to_datetime(date_i)
             day_gap_user = (curr_date - last_update_date).days
@@ -44,13 +44,13 @@ def main():
 
         conn.close()
 
-    def create_user(email, last_date, days=1):
+    def create_user(email,name, last_date, days=1):
 
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
 
-        tuple1 = [email, last_date, days]
-        insert_query = """REPLACE INTO USERS (EMAIL,UPDATE_DATE,DAY_GAP) VALUES (? , ? , ?)"""
+        tuple1 = [email, name, last_date, days]
+        insert_query = """REPLACE INTO USERS (EMAIL,NAME,UPDATE_DATE,DAY_GAP) VALUES (?,? , ? , ?)"""
         cursor.execute(insert_query, tuple1)
         conn.commit()
 
@@ -95,9 +95,11 @@ def main():
 
             date_task  =  col1.date_input("Date", (start_date + datetime.timedelta(i)))
             task       =  col2.text_input("tasks", key=i)
-
-            dates.append(start_date + datetime.timedelta(i))
-            tasks.append(task)
+            taskss = task.split('|')
+            for _ in taskss:
+                dates.append(date_task)
+                tasks.append(_)
+            
 
             if not tasks:
                 st.warning("please enter a task")
@@ -111,9 +113,18 @@ def main():
         st.dataframe(dataset)
 
         if c7.button("Submit"):
+            conn = sqlite3.connect('users.db')
+            cursor = conn.cursor()
+
+
+            for i in range(len(dates)):
+                cursor.execute("INSERT INTO TASKS (EMAIL, NAME, DATE, TASK) VALUEs (?,?,?,?)",[email,name_user,dates[i],tasks[i].strip()])
+                conn.commit()
+                
+            conn.close()
             csv_exporter(dataset, name_user)
 
-            create_user(email, dates[-1])   #dates[-1] contains the last element of the list of the dates. i.e, the last date or the end date.
+            create_user(email,name_user, dates[-1])   #dates[-1] contains the last element of the list of the dates. i.e, the last date or the end date.
 
             check_and_send()
 
